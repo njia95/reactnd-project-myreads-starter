@@ -72,7 +72,8 @@ class BookShelves extends React.Component {
         </div>
         <div className="list-books-content">
             {shelves.map(shelf => (
-              <Bookshelf key={shelf.title} title={shelf.title} books={books.filter(book => book.shelf === shelf.name)} />
+              <Bookshelf key={shelf.title} shelves={shelves} shelf={shelf}
+                books={books.filter(book => book.shelf === shelf.name)} />
             ))}
         </div>
         <div className="open-search">

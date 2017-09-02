@@ -1,19 +1,11 @@
 import React from 'react'
 
-const Book = ({ backgroundImage, title, authors, shelf }) => {
+const Book = ({ backgroundImage, title, authors, options }) => {
   const style = {
     width: 128,
     height: 192,
     backgroundImage: `url(${backgroundImage})`
   }
-  const options = {
-    present: "Currently Reading",
-    future: "Want to Read",
-    past: "Read",
-    none: "None"
-  }
-  const newOptions = Object.entries(options).filter(option => option[0] !== shelf)
-
   return (
     <div className="book">
       <div className="book-top">
@@ -21,8 +13,8 @@ const Book = ({ backgroundImage, title, authors, shelf }) => {
         <div className="book-shelf-changer">
           <select>
             <option value="none" disabled>Move to...</option>
-            {[[shelf, options[shelf]]].concat(newOptions).map(option => (
-              <option key={option[0]} value={option[0]}>{option[1]}</option>
+            {options.concat({ "title": "None", "name": "none" }).map(opt => (
+              <option key={opt.name} value={opt.name}>{opt.title}</option>
             ))}
           </select>
         </div>
