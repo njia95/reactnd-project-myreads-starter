@@ -1,17 +1,29 @@
 import React from 'react'
 
-const Book = ({ backgroundImage, title, authors }) => {
+const Book = ({ backgroundImage, title, authors, shelf }) => {
+  const style = {
+    width: 128,
+    height: 192,
+    backgroundImage: `url(${backgroundImage})`
+  }
+  const options = {
+    present: "Currently Reading",
+    future: "Want to Read",
+    past: "Read",
+    none: "None"
+  }
+  const newOptions = Object.entries(options).filter(option => option[0] !== shelf)
+
   return (
     <div className="book">
       <div className="book-top">
-        <div className="book-cover" style={{ width: 128, height: 192, backgroundImage: `url(${backgroundImage})` }}></div>
+        <div className="book-cover" style={style}></div>
         <div className="book-shelf-changer">
           <select>
             <option value="none" disabled>Move to...</option>
-            <option value="currentlyReading">Currently Reading</option>
-            <option value="wantToRead">Want to Read</option>
-            <option value="read">Read</option>
-            <option value="none">None</option>
+            {[[shelf, options[shelf]]].concat(newOptions).map(option => (
+              <option key={option[0]} value={option[0]}>{option[1]}</option>
+            ))}
           </select>
         </div>
       </div>
