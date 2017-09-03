@@ -1,10 +1,10 @@
 import React from 'react'
 
-const Book = ({ backgroundImage, title, authors, options }) => {
+const Book = ({ imageLinks, title, authors, options }) => {
   const style = {
     width: 128,
     height: 192,
-    backgroundImage: `url(${backgroundImage})`
+    backgroundImage: `url(${imageLinks.thumbnail})`
   }
   return (
     <div className="book">
@@ -13,14 +13,14 @@ const Book = ({ backgroundImage, title, authors, options }) => {
         <div className="book-shelf-changer">
           <select>
             <option value="none" disabled>Move to...</option>
-            {options.concat({ "title": "None", "name": "none" }).map(opt => (
+            {options.map(opt => (
               <option key={opt.name} value={opt.name}>{opt.title}</option>
             ))}
           </select>
         </div>
       </div>
       <div className="book-title">{title}</div>
-      <div className="book-authors">{authors[0]}}</div>
+      <div className="book-authors">{authors[0]}</div>
     </div>
   )
 }

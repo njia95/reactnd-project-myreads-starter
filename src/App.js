@@ -1,5 +1,5 @@
 import React from 'react'
-// import * as BooksAPI from './BooksAPI'
+import * as BooksAPI from './BooksAPI'
 import './App.css'
 
 import SearchBar from './SearchBar'
@@ -15,6 +15,10 @@ class BooksApp extends React.Component {
      */
     showSearchPage: true
   }
+
+  searchBooks = async (query) => {
+    console.log(await BooksAPI.getAll())
+  }
   
   closeSearch = () => {
     this.setState({ showSearchPage: false })
@@ -28,7 +32,7 @@ class BooksApp extends React.Component {
     return (
       <div className="app">
         {this.state.showSearchPage ?
-          <SearchBar onCloseSearch={this.closeSearch} /> :
+          <SearchBar onCloseSearch={this.closeSearch} onSearchBooks={this.searchBooks}/> :
           <Bookshelves onOpenSearch={this.openSearch} />}
       </div>
     )
