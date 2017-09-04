@@ -1,26 +1,26 @@
 import React from 'react'
 
-const Book = ({ imageLinks, title, authors, options }) => {
+const Book = ({ book, shelves, onChangeShelf }) => {
   const style = {
     width: 128,
     height: 192,
-    backgroundImage: `url(${imageLinks.thumbnail})`
+    backgroundImage: `url(${book.imageLinks.thumbnail})`
   }
   return (
     <div className="book">
       <div className="book-top">
         <div className="book-cover" style={style}></div>
         <div className="book-shelf-changer">
-          <select>
+          <select value={book.shelf} onChange={e => onChangeShelf(book, e.target.value)} >
             <option value="none" disabled>Move to...</option>
-            {options.map(opt => (
-              <option key={opt.name} value={opt.name}>{opt.title}</option>
+            {shelves.map(s => (
+              <option key={s.name} value={s.name}>{s.title}</option>
             ))}
           </select>
         </div>
       </div>
-      <div className="book-title">{title}</div>
-      <div className="book-authors">{authors[0]}</div>
+      <div className="book-title">{book.title}</div>
+      <div className="book-authors">{book.authors[0]}</div>
     </div>
   )
 }

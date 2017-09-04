@@ -1,4 +1,5 @@
 import React from 'react'
+import update from 'immutability-helper';
 import * as BooksAPI from './BooksAPI'
 import './App.css'
 
@@ -13,11 +14,25 @@ class BooksApp extends React.Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    showSearchPage: true
+    showSearchPage: true,
+    books: [],
+    searchResults: []
   }
 
   searchBooks = async (query) => {
-    console.log(await BooksAPI.getAll())
+    this.setState({ searchResults: await BooksAPI.search('Art') })
+  }
+
+  onChangeShelf = async (book, newShelf) => {
+    if (book.shelf !== newShelf) {
+      this.setState(state => {
+        const idx = this.state.books.indexOf(book)
+        return {
+          books: update(state.books, { [idx]: { shelf: { $set: newShelf } } })
+        }
+      })
+      await BooksAPI.update(book, newShelf)
+    }
   }
   
   closeSearch = () => {
@@ -28,12 +43,25 @@ class BooksApp extends React.Component {
     this.setState({ showSearchPage: true })
   }
 
+  async componentDidMount() {
+    this.setState({ books: await BooksAPI.getAll() })
+  }
+
   render() {
+    const { showSearchPage, books, searchResults } = this.state
+    const shelves = [
+      { "title": "Currently Reading", "name": "currentlyReading" },
+      { "title": "Want to Read", "name": "wantToRead" },
+      { "title": "Read", "name": "read" },
+      { "title": "None", "name": "none" },
+    ]
     return (
       <div className="app">
-        {this.state.showSearchPage ?
-          <SearchBar onCloseSearch={this.closeSearch} onSearchBooks={this.searchBooks}/> :
-          <Bookshelves onOpenSearch={this.openSearch} />}
+        {showSearchPage ?
+          <SearchBar onCloseSearch={this.closeSearch} onSearchBooks={this.searchBooks}
+            searchResults={searchResults} shelves={shelves} /> :
+          <Bookshelves onOpenSearch={this.openSearch} books={books}
+            shelves={shelves} onChangeShelf={this.onChangeShelf} />}
       </div>
     )
   }
