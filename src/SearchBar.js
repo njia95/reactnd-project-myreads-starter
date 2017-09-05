@@ -1,11 +1,12 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import Book from './Book'
 
-const SearchBar = ({ onCloseSearch, onSearchBooks, searchResults, shelves, onChangeShelf, findShelf }) => {
+const SearchBar = ({ onSearchBooks, searchResults, shelves, onChangeShelf, findShelf }) => {
   return (
     <div className="search-books">
       <div className="search-books-bar">
-        <a className="close-search" onClick={() => onCloseSearch()}>Close</a>
+        <Link className="close-search" to='/'>Close</Link>
         <div className="search-books-input-wrapper">
           <input type="text" placeholder="Search by title or author"
             onChange={e => onSearchBooks(e.target.value)} />

@@ -1,7 +1,8 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import Bookshelf from './Bookshelf'
 
-const BookShelves = ({ onOpenSearch, books, shelves, onChangeShelf }) => {
+const BookShelves = ({ books, shelves, onChangeShelf }) => {
   return (
     <div className="list-books">
       <div className="list-books-title">
@@ -15,7 +16,7 @@ const BookShelves = ({ onOpenSearch, books, shelves, onChangeShelf }) => {
         ))}
       </div>
       <div className="open-search">
-        <a onClick={() => onOpenSearch()}>Add a book</a>
+        <Link to='/search'>Add a book</Link>
       </div>
     </div>
   )
