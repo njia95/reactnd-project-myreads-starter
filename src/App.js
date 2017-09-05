@@ -20,16 +20,20 @@ class BooksApp extends React.Component {
   }
 
   searchBooks = async (query) => {
-    this.setState({ searchResults: await BooksAPI.search('Art') })
+    const searchResults = query.trim() ? await BooksAPI.search(query) : []
+    this.setState({ searchResults })
   }
 
   onChangeShelf = async (book, newShelf) => {
+    const { books } = this.state
     if (book.shelf !== newShelf) {
-      this.setState(state => {
-        const idx = this.state.books.indexOf(book)
-        return {
-          books: update(state.books, { [idx]: { shelf: { $set: newShelf } } })
-        }
+      let idx = books.indexOf(book)
+      if (idx === -1) { // book not in state
+        this.setState({ books: books.concat(book) })
+        idx = books.length - 1
+      }
+      this.setState({
+        books: update(books, { [idx]: { shelf: { $set: newShelf } } })
       })
       await BooksAPI.update(book, newShelf)
     }
@@ -41,6 +45,11 @@ class BooksApp extends React.Component {
 
   openSearch = () => {
     this.setState({ showSearchPage: true })
+  }
+
+  findShelf = (bookId, title) => {
+    const result = this.state.books.filter(book => book.id === bookId)
+    return result.length ? result[0].shelf : 'none'
   }
 
   async componentDidMount() {
@@ -55,11 +64,13 @@ class BooksApp extends React.Component {
       { "title": "Read", "name": "read" },
       { "title": "None", "name": "none" },
     ]
+    // console.log(books)
     return (
       <div className="app">
         {showSearchPage ?
           <SearchBar onCloseSearch={this.closeSearch} onSearchBooks={this.searchBooks}
-            searchResults={searchResults} shelves={shelves} /> :
+            searchResults={searchResults} shelves={shelves}
+            onChangeShelf={this.onChangeShelf} findShelf={this.findShelf} /> :
           <Bookshelves onOpenSearch={this.openSearch} books={books}
             shelves={shelves} onChangeShelf={this.onChangeShelf} />}
       </div>

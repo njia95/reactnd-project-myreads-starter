@@ -1,7 +1,7 @@
 import React from 'react'
-// import Book from './Book'
+import Book from './Book'
 
-const SearchBar = ({ onCloseSearch, onSearchBooks, searchResults }) => {
+const SearchBar = ({ onCloseSearch, onSearchBooks, searchResults, shelves, onChangeShelf, findShelf }) => {
   return (
     <div className="search-books">
       <div className="search-books-bar">
@@ -13,11 +13,14 @@ const SearchBar = ({ onCloseSearch, onSearchBooks, searchResults }) => {
       </div>
       <div className="search-books-results">
         <ol className="books-grid">
-          {/* {searchResults.map(book => (
-            <li key={book.id}>
-              <Book {...book} options={options} />
-            </li>
-          ))} */}
+          {searchResults.map(book => {
+            book.shelf = findShelf(book.id, book.title)
+            return (
+              <li key={book.id}>
+                <Book book={book} shelves={shelves} onChangeShelf={onChangeShelf} />
+              </li>
+            )
+          })}
         </ol>
       </div>
     </div>

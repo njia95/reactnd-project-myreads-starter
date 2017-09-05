@@ -1,16 +1,15 @@
 import React from 'react'
 import Book from './Book'
 
-const Bookshelf = ({ shelves, shelf, books }) => {
-  const options = [shelf].concat(shelves.filter(s => s.name !== shelf.name))
+const Bookshelf = ({ shelfTitle, books, shelves, onChangeShelf }) => {
   return (
     <div className="bookshelf">
-      <h2 className="bookshelf-title">{shelf.title}</h2>
+      <h2 className="bookshelf-title">{shelfTitle}</h2>
       <div className="bookshelf-books">
         <ol className="books-grid">
           {books.map(book => (
             <li key={book.id}>
-              <Book {...book} options={options} />
+              <Book book={book} shelves={shelves} onChangeShelf={onChangeShelf} />
             </li>
           ))}
         </ol>
