@@ -9,6 +9,7 @@ const BookShelves = ({ books, shelves, onChangeShelf }) => {
         <h1>MyReads</h1>
       </div>
       <div className="list-books-content">
+        {/* display three shelves */}
         {shelves.filter(shelf => shelf.name !== "none").map(shelf => (
           <Bookshelf key={shelf.title} shelfTitle={shelf.title}
             books={books.filter(book => book.shelf === shelf.name)}

@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import Book from './Book'
 
-const SearchBar = ({ onSearchBooks, searchResults, shelves, onChangeShelf, findShelf }) => {
+const SearchBar = ({ onSearchBooks, searchResults, shelves, onChangeShelf }) => {
   return (
     <div className="search-books">
       <div className="search-books-bar">
@@ -14,14 +14,11 @@ const SearchBar = ({ onSearchBooks, searchResults, shelves, onChangeShelf, findS
       </div>
       <div className="search-books-results">
         <ol className="books-grid">
-          {searchResults.map(book => {
-            book.shelf = findShelf(book.id, book.title)
-            return (
-              <li key={book.id}>
-                <Book book={book} shelves={shelves} onChangeShelf={onChangeShelf} />
-              </li>
-            )
-          })}
+          {searchResults.map(book => (
+            <li key={book.id}>
+              <Book book={book} shelves={shelves} onChangeShelf={onChangeShelf} />
+            </li>
+          ))}
         </ol>
       </div>
     </div>
