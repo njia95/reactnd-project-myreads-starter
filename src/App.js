@@ -36,21 +36,31 @@ class BooksApp extends React.Component {
    * @param {string} newShelf - a new shelf for the book
    */
   onChangeShelf = async (book, newShelf) => {
-    const { books } = this.state
+    const { searchResults } = this.state
     if (book.shelf !== newShelf) {
-      let idx = books.indexOf(book)
+      let idx = this.state.books.indexOf(book)
 
-      // book not in state; add the book to state
-      if (idx === -1) { 
-        this.setState({ books: books.concat(book) })
-        idx = books.length - 1
+      // add the book to state
+      if (idx === -1) {
+        await this.setState({ books: this.state.books.concat(book) })
+        idx = this.state.books.length - 1
       }
 
       // update both locally and remotely
       this.setState({
-        books: update(books, { [idx]: { shelf: { $set: newShelf } } })
+        books: update(this.state.books, { [idx]: { shelf: { $set: newShelf } } })
       })
-      await BooksAPI.update(book, newShelf)
+
+      BooksAPI.update(book, newShelf)
+
+      const result_idx = searchResults.indexOf(book)
+      console.log(book)
+      console.log(this.state.searchResults)
+      if (result_idx !== -1) {
+        this.setState({
+          searchResults: update(searchResults, { [result_idx]: { shelf: { $set: newShelf } } })
+        })
+      }
     }
   }
 
