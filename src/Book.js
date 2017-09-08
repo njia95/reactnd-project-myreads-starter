@@ -21,7 +21,8 @@ const Book = ({ book, shelves, onChangeShelf }) => {
         </div>
       </div>
       <div className="book-title">{book.get('title')}</div>
-      <div className="book-authors">{book.get('authors')[0]}</div>
+      {/* guard undefined authors when a query is invalid */}
+      <div className="book-authors">{book.get('authors') ? book.get('authors').join(', ') : ''}</div>
     </div>
   )
 }

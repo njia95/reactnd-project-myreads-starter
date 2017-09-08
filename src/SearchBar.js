@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import Book from './Book'
 
-const SearchBar = ({ onSearchBooks, searchResults, shelves, onChangeShelf }) => {
+const SearchBar = ({ searchResults, shelves, onSearchBooks, onChangeShelf }) => {
   return (
     <div className="search-books">
       <div className="search-books-bar">

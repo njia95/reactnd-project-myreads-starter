@@ -21,38 +21,39 @@ class BooksApp extends React.Component {
    */
   searchBooks = async (query) => {
     // results should be empty if query is empty or contains whitespace only
-    const searchResults = query.trim() ? await BooksAPI.search(query) : []
+    let searchResults = query.trim() ? await BooksAPI.search(query) : []
+
+    // guard error messages
+    searchResults = searchResults.error ? [] : searchResults
     searchResults.forEach((book) => {
       // shelf should be none if the book is not in state
-      book.shelf = this.state.books.has(book.id) ?
-        this.state.books.get(book.id).shelf : 'none'
+      book.shelf = this.state.books.has(book.id) ? this.state.books.get(book.id).shelf : 'none'
     });
-    this.setState({ searchResults: Map(searchResults.map(b => [b.id, Map(b)])) })
+
+    await this.setState({ searchResults: Map(searchResults.map(b => [b.id, Map(b)])) })
   }
 
   /**
    * Change a book to a new shelf.
-   * @param {object} book - a book with detailed information
+   * @param {Map} book - a book with detailed information
    * @param {string} newShelf - a new shelf for the book
    */
   onChangeShelf = async (book, newShelf) => {
-    const { books, searchResults } = this.state
     const id = book.get('id')
-
     if (book.get('shelf') !== newShelf) {
-
       // add the book to state
-      if (!books.has(id)) {
-        await this.setState({ books: books.set(id, Map(book)) })
+      if (!this.state.books.has(id)) {
+        await this.setState({ books: this.state.books.set(id, Map(book)) })
       }
-      // update bookshelf in books locally and remotely 
-      this.setState({ books: books.updateIn([id, 'shelf'], val => newShelf) })
+
+      // update bookshelf in books locally and remotely
+      this.setState({ books: this.state.books.updateIn([id, 'shelf'], val => newShelf) })
       BooksAPI.update({ id: id }, newShelf)
 
       // update bookshelf in searchResults
-      if (searchResults.has(id)) {
+      if (this.state.searchResults.has(id)) {
         this.setState({
-          searchResults: searchResults.updateIn([id, 'shelf'], val => newShelf)
+          searchResults: this.state.searchResults.updateIn([id, 'shelf'], val => newShelf)
         })
       }
     }
@@ -67,8 +68,6 @@ class BooksApp extends React.Component {
   }
 
   render() {
-    const { books, searchResults } = this.state
-
     // corresponding shelf name and test to display
     const shelves = [
       { "title": "Currently Reading", "name": "currentlyReading" },
@@ -80,12 +79,12 @@ class BooksApp extends React.Component {
     return (
       <div className="app">
         <Route exact path='/' render={() => (
-          <Bookshelves books={books} shelves={shelves}
+          <Bookshelves books={this.state.books} shelves={shelves}
             onChangeShelf={this.onChangeShelf} />
         )} />
-        <Route path='/search' render={({ history }) => (
-          <SearchBar onSearchBooks={this.searchBooks} shelves={shelves}
-            searchResults={searchResults} onChangeShelf={this.onChangeShelf} />
+        <Route path='/search' render={() => (
+          <SearchBar shelves={shelves} searchResults={this.state.searchResults}
+             onSearchBooks={this.searchBooks} onChangeShelf={this.onChangeShelf} />
         )} />
       </div>
     )
