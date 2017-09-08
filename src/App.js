@@ -1,5 +1,5 @@
 import React from 'react'
-import update from 'immutability-helper';
+import { Map } from 'immutable';
 import { Route } from 'react-router-dom'
 import SearchBar from './SearchBar'
 import Bookshelves from './Bookshelves'
@@ -9,10 +9,10 @@ import './App.css'
 class BooksApp extends React.Component {
   state = {
     // a collection of book objects in three shelves
-    books: [],
+    books: Map(),
 
     // a collection of book objects in search results
-    searchResults: []
+    searchResults: Map()
   }
 
   /**
@@ -23,11 +23,11 @@ class BooksApp extends React.Component {
     // results should be empty if query is empty or contains whitespace only
     const searchResults = query.trim() ? await BooksAPI.search(query) : []
     searchResults.forEach((book) => {
-      const result = this.state.books.filter(b => b.id === book.id)
-      // shelf should be none if the book is notin state
-      book.shelf = result.length ? result[0].shelf : 'none'
+      // shelf should be none if the book is not in state
+      book.shelf = this.state.books.has(book.id) ?
+        this.state.books.get(book.id).shelf : 'none'
     });
-    this.setState({ searchResults })
+    this.setState({ searchResults: Map(searchResults.map(b => [b.id, Map(b)])) })
   }
 
   /**
@@ -36,29 +36,23 @@ class BooksApp extends React.Component {
    * @param {string} newShelf - a new shelf for the book
    */
   onChangeShelf = async (book, newShelf) => {
-    const { searchResults } = this.state
-    if (book.shelf !== newShelf) {
-      let idx = this.state.books.indexOf(book)
+    const { books, searchResults } = this.state
+    const id = book.get('id')
+
+    if (book.get('shelf') !== newShelf) {
 
       // add the book to state
-      if (idx === -1) {
-        await this.setState({ books: this.state.books.concat(book) })
-        idx = this.state.books.length - 1
+      if (!books.has(id)) {
+        await this.setState({ books: books.set(id, Map(book)) })
       }
+      // update bookshelf in books locally and remotely 
+      this.setState({ books: books.updateIn([id, 'shelf'], val => newShelf) })
+      BooksAPI.update({ id: id }, newShelf)
 
-      // update both locally and remotely
-      this.setState({
-        books: update(this.state.books, { [idx]: { shelf: { $set: newShelf } } })
-      })
-
-      BooksAPI.update(book, newShelf)
-
-      const result_idx = searchResults.indexOf(book)
-      console.log(book)
-      console.log(this.state.searchResults)
-      if (result_idx !== -1) {
+      // update bookshelf in searchResults
+      if (searchResults.has(id)) {
         this.setState({
-          searchResults: update(searchResults, { [result_idx]: { shelf: { $set: newShelf } } })
+          searchResults: searchResults.updateIn([id, 'shelf'], val => newShelf)
         })
       }
     }
@@ -68,7 +62,8 @@ class BooksApp extends React.Component {
    * Assign books into state using the given API
    */
   async componentDidMount() {
-    this.setState({ books: await BooksAPI.getAll() })
+    const books = await BooksAPI.getAll()
+    this.setState({ books: Map(books.map(b => [b.id, Map(b)])) })
   }
 
   render() {

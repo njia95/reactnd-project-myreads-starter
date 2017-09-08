@@ -15,7 +15,7 @@ const SearchBar = ({ onSearchBooks, searchResults, shelves, onChangeShelf }) => 
       <div className="search-books-results">
         <ol className="books-grid">
           {searchResults.map(book => (
-            <li key={book.id}>
+            <li key={book.get('id')}>
               <Book book={book} shelves={shelves} onChangeShelf={onChangeShelf} />
             </li>
           ))}
