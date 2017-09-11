@@ -70,10 +70,10 @@ class BooksApp extends React.Component {
   render() {
     // corresponding shelf name and test to display
     const shelves = [
-      { "title": "Currently Reading", "name": "currentlyReading" },
-      { "title": "Want to Read", "name": "wantToRead" },
-      { "title": "Read", "name": "read" },
-      { "title": "None", "name": "none" },
+      { "title": "Currently Reading", "name": "currentlyReading", "display": true },
+      { "title": "Want to Read", "name": "wantToRead", "display": true  },
+      { "title": "Read", "name": "read", "display": true  },
+      { "title": "None", "name": "none", "display": false  },
     ]
     
     return (

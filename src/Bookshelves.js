@@ -10,7 +10,7 @@ const BookShelves = ({ books, shelves, onChangeShelf }) => {
       </div>
       <div className="list-books-content">
         {/* display three shelves */}
-        {shelves.slice(0, -1).map(shelf => (
+        {shelves.filter(shelf => shelf.display).map(shelf => (
           <Bookshelf key={shelf.title} shelfTitle={shelf.title}
             books={books.filter(book => book.get('shelf') === shelf.name)}
             shelves={shelves} onChangeShelf={onChangeShelf} />
