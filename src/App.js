@@ -46,9 +46,17 @@ class BooksApp extends React.Component {
         await this.setState({ books: this.state.books.set(id, Map(book)) })
       }
 
-      // update bookshelf in books locally and remotely
+      // update bookshelf remotely
+      try {
+        await BooksAPI.update({ id }, newShelf)
+      } catch (err) {
+        console.log(err)
+        return 
+      }
+      
+      // only gets here if remote update succeeds
       this.setState({ books: this.state.books.updateIn([id, 'shelf'], val => newShelf) })
-      BooksAPI.update({ id: id }, newShelf)
+      
 
       // update bookshelf in searchResults
       if (this.state.searchResults.has(id)) {
