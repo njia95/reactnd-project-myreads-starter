@@ -1,11 +1,12 @@
 import React from 'react'
 
 const Book = ({ book, shelves, onChangeShelf }) => {
+  // if thumbnail undefined, set empty url
+  const imageLink = book.get('imageLinks') ? (book.get('imageLinks').thumbnail) : ''
   const style = {
     width: 128,
     height: 192,
-    // if thumbnail undefined, set empty url
-    backgroundImage: `url(${book.get('imageLinks').thumbnail} || '')`
+    backgroundImage: `url(${imageLink})`
   }
 
   return (
