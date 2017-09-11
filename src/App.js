@@ -30,7 +30,7 @@ class BooksApp extends React.Component {
       book.shelf = this.state.books.has(book.id) ? this.state.books.get(book.id).shelf : 'none'
     });
 
-    await this.setState({ searchResults: Map(searchResults.map(b => [b.id, Map(b)])) })
+    this.setState({ searchResults: Map(searchResults.map(b => [b.id, Map(b)])) })
   }
 
   /**
