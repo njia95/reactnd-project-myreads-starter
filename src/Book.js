@@ -4,7 +4,8 @@ const Book = ({ book, shelves, onChangeShelf }) => {
   const style = {
     width: 128,
     height: 192,
-    backgroundImage: `url(${book.get('imageLinks').thumbnail})`
+    // if thumbnail undefined, set empty url
+    backgroundImage: `url(${book.get('imageLinks').thumbnail} || '')`
   }
 
   return (
